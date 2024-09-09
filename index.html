@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC 24 Team Matchup</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">FC 24 - Sorteo de Equipos</h1>
+
+        <div class="row">
+            <!-- Equipo 1 -->
+            <div class="col-md-6">
+                <div id="team1" class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title">Equipo 1</h2>
+                        <p>Nombre: <span id="team1-name"></span></p>
+                        <p>Overall: <span id="team1-overall"></span></p>
+                        <p>Defensa: <span id="team1-defence"></span></p>
+                        <p>Delantera: <span id="team1-attack"></span></p>
+                        <p>Medio: <span id="team1-midfield"></span></p>
+                        <p>Liga: <span id="team1-league"></span></p>
+                        <p>País: <span id="team1-nationality"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipo 2 -->
+            <div class="col-md-6">
+                <div id="team2" class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title">Equipo 2</h2>
+                        <p>Nombre: <span id="team2-name"></span></p>
+                        <p>Overall: <span id="team2-overall"></span></p>
+                        <p>Defensa: <span id="team2-defence"></span></p>
+                        <p>Delantera: <span id="team2-attack"></span></p>
+                        <p>Medio: <span id="team2-midfield"></span></p>
+                        <p>Liga: <span id="team2-league"></span></p>
+                        <p>País: <span id="team2-nationality"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button id="nextTeamBtn" class="btn btn-primary btn-lg">Sortea un equipo</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
