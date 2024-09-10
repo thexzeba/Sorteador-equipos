@@ -8,23 +8,41 @@ fetch('teams.json')
         let team1 = null; // Guardamos el primer equipo seleccionado
 
         document.getElementById('nextTeamBtn').addEventListener('click', () => {
+            const selectedLeagues = getSelectedLeagues(); // Obtenemos las ligas seleccionadas
+            const filteredTeams = filterTeamsByLeague(teams, selectedLeagues); // Filtrar los equipos por las ligas seleccionadas
+
             if (!firstTeamSelected) {
-                // Selecciona el primer equipo aleatorio
-                team1 = getRandomTeam(teams);
+                // Selecciona el primer equipo aleatorio dentro del filtro de ligas
+                team1 = getRandomTeam(filteredTeams);
                 displayTeamData(team1, 'team1');
                 firstTeamOverall = team1.overall; // Guardamos el overall del primer equipo
                 firstTeamSelected = true; // Indicamos que ya se seleccionó el primer equipo
             } else {
-                // Selecciona el segundo equipo con un overall similar al primero
-                const team2 = getRandomTeamWithinRange(teams, firstTeamOverall);
-                // Evita que el segundo equipo sea igual al primero
-                if (team1 && team2.team_name === team1.team_name) {
-                    const team2 = getRandomTeamWithinRange(teams, firstTeamOverall); // Selecciona nuevamente
-                }
+                // Selecciona el segundo equipo con un overall similar al primero y que no sea el mismo equipo
+                let team2;
+                do {
+                    team2 = getRandomTeamWithinRange(filteredTeams, firstTeamOverall);
+                } while (team1 && team2.team_name === team1.team_name); // Repetimos si el equipo es el mismo
                 displayTeamData(team2, 'team2');
                 firstTeamSelected = false; // Reiniciamos para el siguiente emparejamiento
             }
         });
+
+        // Función para obtener las ligas seleccionadas de los checkboxes
+        function getSelectedLeagues() {
+            const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]:checked');
+            const selectedLeagues = Array.from(checkboxes).map(checkbox => checkbox.value);
+            return selectedLeagues;
+        }
+
+        // Filtrar los equipos por ligas seleccionadas
+        function filterTeamsByLeague(teams, selectedLeagues) {
+            if (selectedLeagues.length === 0) {
+                return teams; // Si no se selecciona ninguna liga, usar todos los equipos
+            }
+            // Filtrar los equipos que pertenezcan a las ligas seleccionadas (aseguramos que no haya espacios adicionales)
+            return teams.filter(team => selectedLeagues.includes(team.league_name.trim()));
+        }
 
         // Función para seleccionar un equipo aleatorio
         function getRandomTeam(teams) {
@@ -47,7 +65,20 @@ fetch('teams.json')
             const randomIndex = Math.floor(Math.random() * filteredTeams.length);
             return filteredTeams[randomIndex];
         }
-
+        document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        });
+        document.getElementById('selectBigLeaguesBtn').addEventListener('click', () => {
+            const bigLeagues = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
+            const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]');
+        
+            checkboxes.forEach(checkbox => {
+                if (bigLeagues.includes(checkbox.value)) {
+                    checkbox.checked = true; // Seleccionar las ligas grandes
+                }
+            });
+        });
         // Función para mostrar los datos del equipo seleccionado
         function displayTeamData(team, teamId) {
             document.getElementById(`${teamId}-name`).textContent = team.team_name;
