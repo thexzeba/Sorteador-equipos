@@ -6,16 +6,53 @@
     <title>FC 24 Team Matchup</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-light">
 
     <div class="container py-5">
         <h1 class="text-center mb-4">FC 24 - Sorteo de Equipos</h1>
 
+        <!-- Filtro de Ligas (Checkboxes) -->
+        <div class="mb-3">
+            <label class="form-label">Filtrar por Liga:</label>
+            <div id="leagueFilters" class="row">
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Premier League"> Premier League</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="La Liga"> La Liga</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Friendly International"> Friendly International</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Ligue 1"> Ligue 1</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Serie A"> Serie A</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Liga Portugal"> Liga Portugal</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Eredivisie"> Eredivisie</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Championship"> Championship</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Premiership"> Premiership</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Jupiler Pro League"> Jupiler Pro League</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="La Liga 2"> La Liga 2</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Bundesliga"> Bundesliga</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Major League Soccer"> Major League Soccer</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Superliga"> Superliga</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Ligue 2"> Ligue 2</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Serie B"> Serie B</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Eliteserien"> Eliteserien</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="K League 1"> K League 1</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Ekstraklasa"> Ekstraklasa</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="League One"> League One</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="League Two"> League Two</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Premier Division"> Premier Division</div>
+                <div class="col-6 col-md-4 mb-2"><input type="checkbox" value="Super League"> Super League</div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <button id="clearFiltersBtn" class="btn btn-secondary">Limpiar filtros</button>
+            <button id="selectBigLeaguesBtn" class="btn btn-success mt-3">Grandes Ligas</button>
+            <button id="nextTeamBtn" class="btn btn-primary btn-lg">Sortea un equipo</button>
+        </div>
+
         <div class="row">
             <!-- Equipo 1 -->
             <div class="col-md-6">
-                <div id="team1" class="card mb-3">
+                <div id="team1" class="card team-card mb-3">
                     <div class="card-body">
                         <h2 class="card-title">Equipo 1</h2>
                         <p>Nombre: <span id="team1-name"></span></p>
@@ -31,7 +68,7 @@
 
             <!-- Equipo 2 -->
             <div class="col-md-6">
-                <div id="team2" class="card mb-3">
+                <div id="team2" class="card team-card mb-3">
                     <div class="card-body">
                         <h2 class="card-title">Equipo 2</h2>
                         <p>Nombre: <span id="team2-name"></span></p>
@@ -45,10 +82,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="text-center mt-4">
-            <button id="nextTeamBtn" class="btn btn-primary btn-lg">Sortea un equipo</button>
-        </div>
     </div>
 
     <!-- Bootstrap JS and Popper.js -->
@@ -56,3 +89,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
