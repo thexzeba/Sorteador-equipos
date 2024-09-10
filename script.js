@@ -1,109 +1,97 @@
-// Cargar el archivo JSON de equipos
 fetch('teams.json')
     .then(response => response.json())
     .then(data => {
         const teams = data;
         let firstTeamSelected = false;
-        let firstTeamOverall = null; // Guardamos el overall del primer equipo
-        let team1 = null; // Guardamos el primer equipo seleccionado
+        let firstTeamOverall = null;
+        let team1 = null;
 
-        // Evento para limpiar los filtros
+        // Limpiar filtros
         document.getElementById('clearFiltersBtn').addEventListener('click', () => {
             const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false; // Desmarcar cada checkbox
-            });
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            showSelectedFilters(); // Actualizar los filtros seleccionados
         });
+
+        // Mostrar filtros seleccionados
+        function showSelectedFilters() {
+            const selectedFiltersContainer = document.getElementById('selectedFilters');
+            const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]:checked');
+            const selectedFilters = Array.from(checkboxes).map(checkbox => checkbox.value);
+            selectedFiltersContainer.innerHTML = selectedFilters.length > 0 ? 'Filtros: ' + selectedFilters.join(', ') : '';
+        }
+
+        document.querySelectorAll('#leagueFilters input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', showSelectedFilters);
+        });
+
+        // Sorteo de equipos
         document.getElementById('nextTeamBtn').addEventListener('click', () => {
-            const selectedLeagues = getSelectedLeagues(); // Obtenemos las ligas seleccionadas
-            const filteredTeams = filterTeamsByLeague(teams, selectedLeagues); // Filtrar los equipos por las ligas seleccionadas
+            const selectedLeagues = getSelectedLeagues();
+            const filteredTeams = filterTeamsByLeague(teams, selectedLeagues);
 
             if (!firstTeamSelected) {
-                // Animación tipo ruleta para seleccionar el primer equipo
                 startRoulette(filteredTeams, 'team1', (selectedTeam) => {
                     team1 = selectedTeam;
-                    firstTeamOverall = team1.overall; // Guardamos el overall del primer equipo
-                    firstTeamSelected = true; // Indicamos que ya se seleccionó el primer equipo
+                    firstTeamOverall = team1.overall;
+                    firstTeamSelected = true;
                 });
             } else {
-                // Selecciona el segundo equipo con un overall similar al primero y que no sea el mismo equipo
                 let team2;
                 do {
                     team2 = getRandomTeamWithinRange(filteredTeams, firstTeamOverall);
-                } while (team1 && team2.team_name === team1.team_name); // Repetimos si el equipo es el mismo
-                
-                startRoulette(filteredTeams, 'team2', (selectedTeam) => {
+                } while (team1 && team2.team_name === team1.team_name);
+
+                startRoulette(filteredTeams, 'team2', () => {
                     displayTeamData(team2, 'team2');
-                    firstTeamSelected = false; // Reiniciamos para el siguiente emparejamiento
+                    firstTeamSelected = false;
                 });
             }
         });
-        // Función para seleccionar las ligas grandes
-document.getElementById('selectBigLeaguesBtn').addEventListener('click', () => {
-    const bigLeagues = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
-    const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]');
 
-    checkboxes.forEach(checkbox => {
-        if (bigLeagues.includes(checkbox.value)) {
-            checkbox.checked = true; // Seleccionar las ligas grandes
-        }
-    });
-});
-        // Función para iniciar la animación de ruleta
+        // Seleccionar ligas grandes
+        document.getElementById('selectBigLeaguesBtn').addEventListener('click', () => {
+            const bigLeagues = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
+            const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (bigLeagues.includes(checkbox.value)) checkbox.checked = true;
+            });
+            showSelectedFilters(); // Actualizar los filtros seleccionados
+        });
+
         function startRoulette(teams, teamId, callback) {
             let index = 0;
-            const intervalTime = 100; // Intervalo de cambio en milisegundos
-            const spinDuration = 1000; // Duración total de la "ruleta" en milisegundos
-
-            // Iniciar el cambio rápido de equipos
+            const intervalTime = 100;
+            const spinDuration = 1000;
             const interval = setInterval(() => {
-                const currentTeam = teams[index % teams.length]; // Cambia el equipo
+                const currentTeam = teams[index % teams.length];
                 displayTeamData(currentTeam, teamId);
                 index++;
             }, intervalTime);
 
-            // Detener la ruleta después de un tiempo y seleccionar el equipo definitivo
             setTimeout(() => {
-                clearInterval(interval); // Detener la animación
-                const selectedTeam = teams[Math.floor(Math.random() * teams.length)]; // Seleccionar un equipo al azar
-                callback(selectedTeam); // Ejecutar el callback con el equipo final
-                displayTeamData(selectedTeam, teamId); // Mostrar el equipo seleccionado
+                clearInterval(interval);
+                const selectedTeam = teams[Math.floor(Math.random() * teams.length)];
+                callback(selectedTeam);
+                displayTeamData(selectedTeam, teamId);
             }, spinDuration);
         }
 
-        // Función para obtener las ligas seleccionadas de los checkboxes
         function getSelectedLeagues() {
             const checkboxes = document.querySelectorAll('#leagueFilters input[type="checkbox"]:checked');
-            const selectedLeagues = Array.from(checkboxes).map(checkbox => checkbox.value);
-            return selectedLeagues;
+            return Array.from(checkboxes).map(checkbox => checkbox.value);
         }
 
-        // Filtrar los equipos por ligas seleccionadas
         function filterTeamsByLeague(teams, selectedLeagues) {
-            if (selectedLeagues.length === 0) {
-                return teams; // Si no se selecciona ninguna liga, usar todos los equipos
-            }
-            // Filtrar los equipos que pertenezcan a las ligas seleccionadas (aseguramos que no haya espacios adicionales)
-            return teams.filter(team => selectedLeagues.includes(team.league_name.trim()));
+            return selectedLeagues.length === 0 ? teams : teams.filter(team => selectedLeagues.includes(team.league_name.trim()));
         }
 
-        // Función para seleccionar un equipo con "overall" dentro de un rango similar
         function getRandomTeamWithinRange(teams, referenceOverall) {
-            const acceptableRange = 2; // Rango aceptable de diferencia de overall (puedes ajustarlo)
-            const filteredTeams = teams.filter(team => 
-                Math.abs(team.overall - referenceOverall) <= acceptableRange
-            );
-            
-            // Si no hay equipos en el rango, volvemos a seleccionar de todos (para evitar errores)
-            if (filteredTeams.length === 0) {
-                return getRandomTeam(teams);
-            }
-            
-            const randomIndex = Math.floor(Math.random() * filteredTeams.length);
-            return filteredTeams[randomIndex];
+            const acceptableRange = 2;
+            const filteredTeams = teams.filter(team => Math.abs(team.overall - referenceOverall) <= acceptableRange);
+            return filteredTeams.length === 0 ? teams[Math.floor(Math.random() * teams.length)] : filteredTeams[Math.floor(Math.random() * filteredTeams.length)];
         }
 
-        // Función para mostrar los datos del equipo seleccionado
         function displayTeamData(team, teamId) {
             document.getElementById(`${teamId}-name`).textContent = team.team_name || "No disponible";
             document.getElementById(`${teamId}-overall`).textContent = team.overall || "No disponible";
