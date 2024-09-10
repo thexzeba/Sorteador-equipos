@@ -22,6 +22,9 @@ body {
     margin: 20px 0;
     border-radius: 8px;
     background-color: #eaeaea;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+    transition: transform 0.3s ease-in-out;
 }
 
 h1 {
@@ -58,4 +61,7 @@ img {
 .team-card {
     opacity: 0;
     animation: fadeIn 0.5s forwards;
+}
+.team-card.selected {
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño al ser seleccionado */
 }
